@@ -72,8 +72,6 @@ dependencies {
     implementation("javax.mail:javax.mail-api:1.6.2")
     implementation("javax.activation:activation:1.1.1")
 
-    implementation ("com.jwplayer:jwplayer-core:4.5.0")
-    implementation ("com.jwplayer:jwplayer-common:4.5.0")
     implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")

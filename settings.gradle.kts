@@ -10,12 +10,12 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { setUrl("https://jitpack.io") }
         maven {
-            setUrl("https://mvn.jwplayer.com/content/repositories/releases/")
+            setUrl("https://jitpack.io")
         }
     }
 }
 
 rootProject.name = "TestProject"
 include(":app")
+include(":nfc")
