@@ -18,8 +18,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import com.ogzkesk.testproject.R
-import com.ogzkesk.testproject.second.SecondActivity
-import com.ogzkesk.testproject.third.NfcActivity
+import com.ogzkesk.testproject.nfc.NfcActivity
 
 private const val FRAME =
     "<iframe width=\"100%\" height=\"100%\" src=\"https://vixcloud.co/embed/171886?token=863224f149595dcde0fae661712b0baf&amp;title=The+Buccaneers&amp;referer=1&amp;expires=1707510390&amp;description=S1%3AE1+Veleno+americano&amp;nextEpisode=1&amp;b=1\" title=\"\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen></iframe>"

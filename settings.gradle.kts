@@ -18,4 +18,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "TestProject"
 include(":app")
-include(":nfc")

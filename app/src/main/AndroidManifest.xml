@@ -30,21 +30,24 @@
         android:theme="@style/Theme.TestProject"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
         <activity
-            android:name=".third.NfcActivity"
-            android:exported="true" >
+            android:name=".nfc.NfcActivity"
+            android:exported="false" >
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
                 <data android:mimeType="text/plain"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+
         <activity
             android:name=".second.SecondActivity"
             android:exported="false"
             android:label="@string/title_activity_second"
             android:theme="@style/Theme.TestProject"
             android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name=".main.MainActivity"
             android:exported="true"
@@ -55,32 +58,13 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="googlechrome" />
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-                <data android:scheme="about" />
-                <data android:scheme="javascript" />
-                <data android:scheme="content" />
-                <data android:mimeType="text/html" />
-                <data android:mimeType="text/plain" />
-                <data android:mimeType="application/xhtml+xml" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:scheme="file" />
-                <data android:scheme="content" />
-                <data android:mimeType="multipart/related" />
-            </intent-filter>
         </activity>
+
+
+        <meta-data
+            android:name="android.nfc.action.TECH_DISCOVERED"
+            android:resource="@xml/nfc_tech_filter" />
+
     </application>
 
 </manifest>

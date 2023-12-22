@@ -6,41 +6,16 @@
     android:orientation="vertical"
     android:gravity="center"
     android:layout_height="match_parent"
-    tools:context=".third.NfcActivity">
-
-    <EditText
-        android:layout_margin="16dp"
-        android:hint="Message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/et_message"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SEND"
-        android:layout_marginBottom="32dp"
-        android:id="@+id/btn_send"/>
-
-    <com.google.android.material.divider.MaterialDivider
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+    tools:context=".nfc.NfcActivity">
 
     <TextView
         android:layout_marginTop="32dp"
-        android:id="@+id/text_view_explanation"
+        android:id="@+id/tv_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="start"
         android:hint="Read Data: "
         android:textAlignment="textStart" />
 
-    <ToggleButton
-        android:id="@+id/toggle_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </LinearLayout>
