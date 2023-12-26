@@ -1,17 +1,16 @@
 package com.ogzkesk.testproject.second
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.viewModels
-import androidx.lifecycle.Lifecycle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import com.chaquo.python.Python
+import com.chaquo.python.android.AndroidPlatform
 import com.ogzkesk.testproject.R
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SecondActivity : AppCompatActivity() {
@@ -25,6 +24,9 @@ class SecondActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_second)
+
+
+
 
         mAnswerTextView = findViewById(R.id.tv_answer)
         mSendButton = findViewById(R.id.btn_send)

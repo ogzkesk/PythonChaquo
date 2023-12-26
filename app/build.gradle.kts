@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("dev.shreyaspatil.compose-compiler-report-generator") version "1.1.0"
     id("kotlin-kapt")
+    id("com.chaquo.python")
 }
 
 
@@ -23,11 +24,22 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        ndk {
+            abiFilters += listOf(
+                "arm64-v8a", // for current devices
+//                "x86_64",  // for emulators
+//                "x86",     // for old emulators
+//                "armeabi-v7a"  // for old devices
+            )
+        }
     }
+
 
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -53,6 +65,18 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+}
+
+chaquopy {
+    defaultConfig {
+        version = "3.8"
+        buildPython("C:/Users/Oguz/AppData/Local/Programs/Python/Python38/python.exe")
+        pip {
+            install("scipy")
+        }
+
+    }
+
 }
 
 

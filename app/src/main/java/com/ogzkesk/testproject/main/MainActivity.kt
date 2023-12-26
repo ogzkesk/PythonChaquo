@@ -1,6 +1,8 @@
 package com.ogzkesk.testproject.main
 
 import android.annotation.SuppressLint
+import android.app.admin.DevicePolicyManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.hardware.Sensor
@@ -9,16 +11,22 @@ import android.hardware.SensorEventListener2
 import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.provider.BlockedNumberContract
+import android.provider.Telephony
+import android.telecom.Call
+import android.telecom.CallScreeningService
+import android.telephony.TelephonyManager
 import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityOptionsCompat
 import com.ogzkesk.testproject.R
-import com.ogzkesk.testproject.nfc.NfcActivity
+import com.ogzkesk.testproject.python.PythonActivity
+import com.ogzkesk.testproject.second.SecondActivity
+
 
 private const val FRAME =
     "<iframe width=\"100%\" height=\"100%\" src=\"https://vixcloud.co/embed/171886?token=863224f149595dcde0fae661712b0baf&amp;title=The+Buccaneers&amp;referer=1&amp;expires=1707510390&amp;description=S1%3AE1+Veleno+americano&amp;nextEpisode=1&amp;b=1\" title=\"\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen></iframe>"
@@ -43,7 +51,6 @@ class MainActivity : ComponentActivity() {
 //            registerSensorCallback()
         }
     }
-
 
 
     private fun sensorListener() = object : SensorEventListener2 {
@@ -102,9 +109,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-        val intent = Intent(this@MainActivity, NfcActivity::class.java)
-        startActivity(intent)
+        val anim = ActivityOptionsCompat.makeBasic().toBundle()
+        val intent = Intent(this,PythonActivity::class.java)
+        startActivity(intent, anim)
         finish()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -116,7 +123,7 @@ class MainActivity : ComponentActivity() {
         cm.acceptCookie()
         cm.setAcceptThirdPartyCookies(mWebView, true)
 
-
+        mWebView.setLayerType(WebView.LAYER_TYPE_HARDWARE,null)
         mWebView.settings.apply {
             setSupportZoom(true)
             userAgentString = CHROME_AGENT
@@ -162,31 +169,31 @@ class MainActivity : ComponentActivity() {
 
 
                     if (url.contains("/watch")) {
-                        Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                            view?.evaluateJavascript(
-                                """
-                                var secondIframe = document.querySelector("#app > div > iframe").contentDocument.querySelector("iframe");
-                                secondIframe.getAttribute("src");
-                            """.trimIndent()
-                            ) { jsResultUrl ->
-                                if (jsResultUrl == "null") return@evaluateJavascript
-                                println("resultUrl :: $jsResultUrl")
-                                val newUrl = jsResultUrl.replace("\"", "")
-                                view.loadUrl(newUrl)
-                            }
-                        }, 1000)
+//                        Handler(Looper.getMainLooper()).postDelayed(Runnable {
+//                            view?.evaluateJavascript(
+//                                """
+//                                var secondIframe = document.querySelector("#app > div > iframe").contentDocument.querySelector("iframe");
+//                                secondIframe.getAttribute("src");
+//                            """.trimIndent()
+//                            ) { jsResultUrl ->
+//                                if (jsResultUrl == "null") return@evaluateJavascript
+//                                println("resultUrl :: $jsResultUrl")
+//                                val newUrl = jsResultUrl.replace("\"", "")
+//                                view.loadUrl(newUrl)
+//                            }
+//                        }, 1000)
                     }
 
                     if (url.contains("vixcloud.co/embed")) {
-                        Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                            mWebView.evaluateJavascript("""
-                            window.jwplayer.defaults.autostart = true
-                            window.jwplayer.vid.autoplay = true
-                        """.trimIndent(),){
-                                println("playe basıldı mı ?:: $it")
-                                    mWebView.reload()
-                            }
-                        },2000)
+//                        Handler(Looper.getMainLooper()).postDelayed(Runnable {
+//                            mWebView.evaluateJavascript("""
+//                            window.jwplayer.defaults.autostart = true
+//                            window.jwplayer.vid.autoplay = true
+//                        """.trimIndent(),){
+//                                println("playe basıldı mı ?:: $it")
+//                                    mWebView.reload()
+//                            }
+//                        },2000)
                     }
                 }
                 super.onPageFinished(view, url)

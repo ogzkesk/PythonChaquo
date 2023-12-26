@@ -2,9 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.NFC"/>
-    <uses-feature android:name="android.hardware.nfc" android:required="true"/>
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
@@ -14,6 +11,7 @@
         android:maxSdkVersion="32" />
 
     <uses-feature android:name="android.hardware.sensor.stepcounter" />
+
     <uses-permission android:name="android.permission.BODY_SENSORS" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
 
@@ -30,24 +28,15 @@
         android:theme="@style/Theme.TestProject"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
         <activity
-            android:name=".nfc.NfcActivity"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
-                <data android:mimeType="text/plain"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
-
+            android:name=".python.PythonActivity"
+            android:exported="false" />
         <activity
             android:name=".second.SecondActivity"
             android:exported="false"
             android:label="@string/title_activity_second"
             android:theme="@style/Theme.TestProject"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
             android:name=".main.MainActivity"
             android:exported="true"
@@ -59,12 +48,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
-        <meta-data
-            android:name="android.nfc.action.TECH_DISCOVERED"
-            android:resource="@xml/nfc_tech_filter" />
-
     </application>
 
 </manifest>
