@@ -2,9 +2,9 @@ package com.ogzkesk.testproject.peerjs.web_rtc
 
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
-import com.ogzkesk.testproject.showToast
+import kotlin.Throws
 
-
+// TODO rationale for permissions
 // TODO callTypes
 // TODO onClick smallVideoScreen -> fullScreen
 // TODO deepLinks
@@ -25,10 +25,10 @@ class WebRTC private constructor(
         WebRTCUtils.initWebViewSettings(webView, ::onPageFinished)
     }
 
+    @Throws(PermissionException::class)
     fun createRoom() {
         if (!WebRTCUtils.checkPermissions(activity)) {
-            activity.showToast(PERMISSION_EXCEPTION)
-            return
+            throw PermissionException()
         }
 
         roomId = WebRTCUtils.generateRoomId()
@@ -36,15 +36,25 @@ class WebRTC private constructor(
         webView.loadUrl(WebRTCUtils.FILE_PATH)
     }
 
-    fun joinRoom(roomId: String) {
+    @Throws(PermissionException::class)
+    fun joinRoom(id: String) {
         if (!WebRTCUtils.checkPermissions(activity)) {
-            activity.showToast(PERMISSION_EXCEPTION)
-            return
+            throw PermissionException()
         }
 
-        this.roomId = roomId
+        roomId = id
         roomType = RoomType.JOIN
         webView.loadUrl(WebRTCUtils.FILE_PATH)
+    }
+
+    private fun onPageFinished() {
+        WebRTCUtils.initializePeer(
+            roomId,
+            roomType,
+            webView,
+            isAudioEnabled,
+            isVideoEnabled
+        )
     }
 
     fun toggleAudio() {
@@ -55,17 +65,6 @@ class WebRTC private constructor(
     fun toggleVideo() {
         isVideoEnabled = !isVideoEnabled
         WebRTCUtils.toggleVideo(webView, isVideoEnabled)
-    }
-
-
-    private fun onPageFinished() {
-        WebRTCUtils.initializePeer(
-            roomId,
-            roomType,
-            webView,
-            isAudioEnabled,
-            isVideoEnabled
-        )
     }
 
     fun isVideoEnabled(): Boolean {
@@ -125,10 +124,5 @@ class WebRTC private constructor(
                 callType = callType
             )
         }
-    }
-
-    companion object {
-        private const val TAG = "WebRTC"
-        private const val PERMISSION_EXCEPTION = "Permissions required"
     }
 }

@@ -10,7 +10,9 @@ import com.google.android.material.button.MaterialButton
 import com.ogzkesk.testproject.R
 import com.ogzkesk.testproject.databinding.ActivityPeerJsBinding
 import com.ogzkesk.testproject.peerjs.web_rtc.CallType
+import com.ogzkesk.testproject.peerjs.web_rtc.PermissionException
 import com.ogzkesk.testproject.peerjs.web_rtc.WebRTC
+import com.ogzkesk.testproject.showToast
 
 class PeerJsActivity : AppCompatActivity() {
 
@@ -54,13 +56,21 @@ class PeerJsActivity : AppCompatActivity() {
 
         layoutRoom.run {
             btnJoin.setOnClickListener {
-                webRTC.joinRoom(etRoomNo.text.toString())
-                openCallLayout()
+                try {
+                    webRTC.joinRoom(etRoomNo.text.toString())
+                    openCallLayout()
+                }catch (e: Exception){
+                    showToast(e.message ?: "")
+                }
             }
 
             btnCreateVideoCall.setOnClickListener {
-                webRTC.createRoom()
-                openCallLayout()
+                try {
+                    webRTC.createRoom()
+                    openCallLayout()
+                }catch (e: Exception){
+                    showToast(e.message ?: "")
+                }
             }
 
             btnCreatePhoneCall.setOnClickListener {
