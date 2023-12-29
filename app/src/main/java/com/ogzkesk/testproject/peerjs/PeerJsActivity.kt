@@ -107,4 +107,13 @@ class PeerJsActivity : AppCompatActivity() {
             }
         }
     }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        if(binding.layoutCall.root.isVisible){
+            closeCallLayout()
+        } else {
+            super.onBackPressed()
+        }
+    }
 }
