@@ -8,6 +8,7 @@
     <string name="previous">Previous</string>
 
     <string name="card">No: %1$s\nName: %2$s %3$s\nExpire Date: %4$s\nCCV: %5$s\nType: %6$s</string>
+    <string name="roomId">Room Id: %1$s</string>
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris

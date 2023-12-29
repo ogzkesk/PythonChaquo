@@ -24,6 +24,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityOptionsCompat
 import com.ogzkesk.testproject.R
+import com.ogzkesk.testproject.peerjs.PeerJsActivity
 import com.ogzkesk.testproject.python.PythonActivity
 import com.ogzkesk.testproject.second.SecondActivity
 
@@ -110,7 +111,7 @@ class MainActivity : ComponentActivity() {
         setContentView(R.layout.activity_main)
 
         val anim = ActivityOptionsCompat.makeBasic().toBundle()
-        val intent = Intent(this,PythonActivity::class.java)
+        val intent = Intent(this,PeerJsActivity::class.java)
         startActivity(intent, anim)
         finish()
 

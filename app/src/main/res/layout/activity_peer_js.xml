@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".peerjs.PeerJsActivity">
+
+    <include
+        android:id="@+id/layout_call"
+        layout="@layout/layout_call"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/layout_room"
+        layout="@layout/layout_room"
+        android:visibility="visible" />
+
+</LinearLayout>
