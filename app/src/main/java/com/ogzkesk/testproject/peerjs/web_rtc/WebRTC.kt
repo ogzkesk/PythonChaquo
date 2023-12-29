@@ -4,7 +4,6 @@ import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
 import kotlin.Throws
 
-// TODO rationale for permissions
 // TODO callTypes
 // TODO onClick smallVideoScreen -> fullScreen
 // TODO deepLinks
