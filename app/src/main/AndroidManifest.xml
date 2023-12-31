@@ -40,7 +40,14 @@
 
         <activity
             android:name=".peerjs.PeerJsActivity"
-            android:exported="false" />
+            android:exported="true" >
+            <intent-filter android:autoVerify="true">
+                <data android:host="com.ogzkesk.testproject" android:scheme="https"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <action android:name="android.intent.action.VIEW"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".python.PythonActivity"
             android:exported="false" />

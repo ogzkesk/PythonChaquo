@@ -28,9 +28,9 @@ android {
         ndk {
             abiFilters += listOf(
                 "arm64-v8a", // for current devices
-//                "x86_64",  // for emulators
-//                "x86",     // for old emulators
-//                "armeabi-v7a"  // for old devices
+                "x86_64",  // for emulators
+                "x86",     // for old emulators
+                "armeabi-v7a"  // for old devices
             )
         }
     }

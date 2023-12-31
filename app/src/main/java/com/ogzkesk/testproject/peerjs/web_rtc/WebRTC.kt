@@ -1,12 +1,13 @@
 package com.ogzkesk.testproject.peerjs.web_rtc
 
+import android.net.Uri
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
-import kotlin.Throws
+import kotlin.jvm.Throws
 
 // TODO callTypes
 // TODO onClick smallVideoScreen -> fullScreen
-// TODO deepLinks
+
 
 class WebRTC private constructor(
     val webView: WebView,
@@ -32,7 +33,8 @@ class WebRTC private constructor(
 
         roomId = WebRTCUtils.generateRoomId()
         roomType = RoomType.CREATE
-        webView.loadUrl(WebRTCUtils.FILE_PATH)
+        webView.post { webView.loadUrl(FILE_PATH) }
+//        webView.loadUrl(FILE_PATH)
     }
 
     @Throws(PermissionException::class)
@@ -43,7 +45,14 @@ class WebRTC private constructor(
 
         roomId = id
         roomType = RoomType.JOIN
-        webView.loadUrl(WebRTCUtils.FILE_PATH)
+        webView.post { webView.loadUrl(FILE_PATH) }
+//        webView.loadUrl(FILE_PATH)
+    }
+
+    fun exitRoom(){
+        roomId = null
+        roomType = null
+        webView.post { webView.loadUrl("") }
     }
 
     private fun onPageFinished() {
@@ -123,5 +132,9 @@ class WebRTC private constructor(
                 callType = callType
             )
         }
+    }
+
+    companion object {
+        private const val FILE_PATH = "file:android_asset/call.html"
     }
 }

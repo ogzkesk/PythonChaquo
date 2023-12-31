@@ -1,11 +1,14 @@
 package com.ogzkesk.testproject.peerjs
 
+import android.app.TaskStackBuilder
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.navigation.NavDestination
 import com.google.android.material.button.MaterialButton
 import com.ogzkesk.testproject.R
 import com.ogzkesk.testproject.databinding.ActivityPeerJsBinding
@@ -13,6 +16,7 @@ import com.ogzkesk.testproject.peerjs.web_rtc.CallType
 import com.ogzkesk.testproject.peerjs.web_rtc.PermissionException
 import com.ogzkesk.testproject.peerjs.web_rtc.WebRTC
 import com.ogzkesk.testproject.showToast
+import java.util.UUID
 
 class PeerJsActivity : AppCompatActivity() {
 
@@ -30,6 +34,7 @@ class PeerJsActivity : AppCompatActivity() {
     }
 
 
+
     private fun initUI() = with(binding) {
         layoutCall.run {
 
@@ -40,6 +45,7 @@ class PeerJsActivity : AppCompatActivity() {
 
             btnFinishCall.setOnClickListener {
                 closeCallLayout()
+                webRTC.exitRoom()
 //                webRTC.release()
             }
 
@@ -83,6 +89,7 @@ class PeerJsActivity : AppCompatActivity() {
         webRTC = WebRTC.Builder(this)
             .setWebView(binding.layoutCall.webView)
             .setCallType(CallType.VIDEO)
+            .setVideoDisabled()
             .requestPermissions()
             .build()
     }

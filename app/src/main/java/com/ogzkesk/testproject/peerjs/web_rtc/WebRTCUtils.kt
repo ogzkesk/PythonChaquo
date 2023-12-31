@@ -14,8 +14,6 @@ import java.util.UUID
 
 object WebRTCUtils {
 
-    private const val TAG = "WebRTCUtils"
-    const val FILE_PATH = "file:android_asset/call.html"
     private val permissions: Array<String> = arrayOf(
         android.Manifest.permission.CAMERA,
         android.Manifest.permission.RECORD_AUDIO
@@ -75,15 +73,13 @@ object WebRTCUtils {
         if (roomId == null) {
             return
         }
-
+        println("initializePeer() roomId :: $roomId")
         when (roomType) {
             RoomType.CREATE -> {
                 callJsFunction(webView, "javascript:init('$roomId')")
                 callJsFunction(webView, "javascript:startCall('$roomId')")
-                toggleVideo(
-                    webView,
-                    isVideoEnabled
-                ) // TODO toggle yerine initte belirleme olması lazım
+                // TODO toggle yerine initte belirleme olması lazım
+                toggleVideo(webView, isVideoEnabled)
                 toggleAudio(webView, isAudioEnabled)
             }
 
@@ -129,6 +125,7 @@ object WebRTCUtils {
     private fun callJsFunction(webView: WebView?, function: String) {
         webView?.post { webView.loadUrl(function) }
     }
+
 
     fun clear(webView: WebView) {
         webView.apply {
