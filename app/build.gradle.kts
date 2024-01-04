@@ -4,6 +4,7 @@ plugins {
     id("dev.shreyaspatil.compose-compiler-report-generator") version "1.1.0"
     id("kotlin-kapt")
     id("com.chaquo.python")
+    id("com.google.gms.google-services")
 }
 
 
@@ -102,6 +103,10 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
     implementation("com.google.ai.client.generativeai:generativeai:0.1.1")
+    implementation("com.google.firebase:firebase-auth:22.3.0")
+    implementation("com.google.firebase:firebase-messaging:23.4.0")
+    implementation("com.google.firebase:firebase-firestore:24.10.0")
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
 
 
 }

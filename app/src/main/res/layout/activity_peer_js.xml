@@ -13,8 +13,14 @@
         android:visibility="gone" />
 
     <include
-        android:id="@+id/layout_room"
-        layout="@layout/layout_room"
+        android:id="@+id/layout_login"
+        layout="@layout/layout_login"
         android:visibility="visible" />
+
+    <include
+        android:id="@+id/layout_users"
+        layout="@layout/layout_users"
+        android:visibility="gone" />
+
 
 </LinearLayout>

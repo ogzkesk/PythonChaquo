@@ -1,51 +1,141 @@
 package com.ogzkesk.testproject.peerjs
 
-import android.app.TaskStackBuilder
+import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.navigation.NavDestination
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.button.MaterialButton
+import com.google.firebase.auth.FirebaseAuth
 import com.ogzkesk.testproject.R
 import com.ogzkesk.testproject.databinding.ActivityPeerJsBinding
+import com.ogzkesk.testproject.peerjs.user.User
+import com.ogzkesk.testproject.peerjs.user.UserRepository
 import com.ogzkesk.testproject.peerjs.web_rtc.CallType
-import com.ogzkesk.testproject.peerjs.web_rtc.PermissionException
 import com.ogzkesk.testproject.peerjs.web_rtc.WebRTC
 import com.ogzkesk.testproject.showToast
-import java.util.UUID
+import kotlinx.coroutines.launch
 
 class PeerJsActivity : AppCompatActivity() {
 
     private lateinit var clipboardManager: ClipboardManager
     private lateinit var binding: ActivityPeerJsBinding
+    private lateinit var userAdapter: UserAdapter
+    private lateinit var userRepository: UserRepository
     private lateinit var webRTC: WebRTC
+    private lateinit var auth: FirebaseAuth
+    private var userInCall: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityPeerJsBinding.inflate(layoutInflater)
         clipboardManager = getSystemService(ClipboardManager::class.java)
+        auth = FirebaseAuth.getInstance()
+        userAdapter = UserAdapter()
+        userRepository = UserRepository(this, lifecycleScope)
+
         setContentView(binding.root)
         initWebRTC()
         initUI()
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    observeUsers()
+                }
+                launch {
+                    observeCall()
+                }
+            }
+        }
+    }
+
+//    private fun initUsers(){
+//        userRepository.getAllUsers(lifecycleScope){
+//            println("initUsers() :: $it")
+//            userAdapter.submitList(it)
+//        }
+//    }
+
+    private fun observeCall() {
+        userRepository.observeCalls { call ->
+            AlertDialog.Builder(this@PeerJsActivity)
+                .setTitle("Incoming Call from ${call.from}")
+                .setNegativeButton("Reject") { v, _ -> v.dismiss() }
+                .setPositiveButton("Join") { v, _ ->
+                    try {
+                        v.dismiss()
+                        webRTC.joinRoom(call.id)
+                        openCallLayout()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+                .create()
+                .show()
+        }
     }
 
 
+    private fun observeUsers() {
+        userRepository.observeUsers { users, error ->
+            println("Activity users :: $users")
+            userAdapter.submitList(users)
+            if (error != null) {
+                showToast(error)
+            }
+        }
+    }
+
 
     private fun initUI() = with(binding) {
+
+        layoutLogin.run {
+            root.isVisible = auth.currentUser == null
+            userRepository.initGoogleSigning()
+
+            btnSignin.setOnClickListener {
+                lifecycleScope.launch {
+
+                    userRepository.login { error ->
+                        if (error != null) {
+                            println("login() error: $error")
+                            showToast(error)
+                            return@login
+                        }
+
+                        openUsersLayout()
+                    }
+                }
+            }
+        }
+
+        layoutUsers.run {
+            root.isVisible = auth.currentUser != null
+            rvUsers.adapter = userAdapter
+            rvUsers.layoutManager = LinearLayoutManager(this@PeerJsActivity)
+            rvUsers.setHasFixedSize(true)
+            userAdapter.setOnClickListener(::startCall)
+//            initUsers()
+        }
+
+
         layoutCall.run {
 
             btnCopy.setOnClickListener {
-                val clip = ClipData.newPlainText("room-id",webRTC.getRoomId())
+                val clip = ClipData.newPlainText("room-id", webRTC.getRoomId())
                 clipboardManager.setPrimaryClip(clip)
             }
 
             btnFinishCall.setOnClickListener {
                 closeCallLayout()
-                webRTC.exitRoom()
+                removeCall()
 //                webRTC.release()
             }
 
@@ -59,30 +149,37 @@ class PeerJsActivity : AppCompatActivity() {
                 webRTC.toggleVideo()
             }
         }
+    }
 
-        layoutRoom.run {
-            btnJoin.setOnClickListener {
-                try {
-                    webRTC.joinRoom(etRoomNo.text.toString())
-                    openCallLayout()
-                }catch (e: Exception){
-                    showToast(e.message ?: "")
-                }
+
+    private fun startCall(remoteUser: User) = lifecycleScope.launch {
+        if (auth.currentUser?.uid != null) {
+
+            userInCall = remoteUser
+            webRTC.createRoom()
+            val currentRoomId = webRTC.getRoomId()
+            if (currentRoomId == null) {
+                showToast("RoomId not initialized")
+                return@launch
             }
 
-            btnCreateVideoCall.setOnClickListener {
-                try {
-                    webRTC.createRoom()
-                    openCallLayout()
-                }catch (e: Exception){
-                    showToast(e.message ?: "")
-                }
-            }
+            userRepository.createCall(
+                to = remoteUser.id,
+                roomId = currentRoomId
+            )
 
-            btnCreatePhoneCall.setOnClickListener {
-                // passive
-            }
+            openCallLayout()
         }
+    }
+
+    private fun removeCall() = lifecycleScope.launch {
+        val currentRoomId = webRTC.getRoomId()
+        if (currentRoomId == null) {
+            showToast("No roomId for close call")
+            return@launch
+        }
+        userRepository.closeCall(currentRoomId)
+        webRTC.exitRoom()
     }
 
     private fun initWebRTC() {
@@ -96,18 +193,26 @@ class PeerJsActivity : AppCompatActivity() {
 
     private fun openCallLayout() {
         binding.layoutCall.root.isVisible = true
-        binding.layoutRoom.root.isVisible = false
-        binding.layoutCall.tvRoomId.text = getString(R.string.roomId,webRTC.getRoomId())
+        binding.layoutUsers.root.isVisible = false
+        binding.layoutLogin.root.isVisible = false
+        binding.layoutCall.tvRoomId.text = getString(R.string.roomId, webRTC.getRoomId())
     }
 
     private fun closeCallLayout() {
         binding.layoutCall.root.isVisible = false
-        binding.layoutRoom.root.isVisible = true
+        binding.layoutUsers.root.isVisible = true
     }
 
-    private fun toggleMicDrawable(b: Boolean){
+    private fun openUsersLayout() {
+        println("openUsersLayout()")
+        binding.layoutUsers.root.isVisible = true
+        binding.layoutLogin.root.isVisible = false
+        binding.layoutCall.root.isVisible = false
+    }
+
+    private fun toggleMicDrawable(b: Boolean) {
         binding.layoutCall.btnToggleAudio.run {
-            if(b) {
+            if (b) {
                 (this as MaterialButton).setIconResource(R.drawable.ic_mic_on)
             } else {
                 (this as MaterialButton).setIconResource(R.drawable.ic_mic_off)
@@ -115,9 +220,9 @@ class PeerJsActivity : AppCompatActivity() {
         }
     }
 
-    private fun toggleVideoDrawable(b: Boolean){
+    private fun toggleVideoDrawable(b: Boolean) {
         binding.layoutCall.btnToggleVideo.run {
-            if(b) {
+            if (b) {
                 (this as MaterialButton).setIconResource(R.drawable.ic_video)
             } else {
                 (this as MaterialButton).setIconResource(R.drawable.ic_video_off)
@@ -127,10 +232,17 @@ class PeerJsActivity : AppCompatActivity() {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        if(binding.layoutCall.root.isVisible){
+        if (binding.layoutCall.root.isVisible) {
             closeCallLayout()
         } else {
             super.onBackPressed()
         }
+    }
+
+
+    override fun onDestroy() {
+        userRepository.removeListeners()
+        FirebaseAuth.getInstance().signOut()
+        super.onDestroy()
     }
 }

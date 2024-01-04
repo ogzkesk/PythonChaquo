@@ -27,6 +27,7 @@ import com.ogzkesk.testproject.R
 import com.ogzkesk.testproject.peerjs.PeerJsActivity
 import com.ogzkesk.testproject.python.PythonActivity
 import com.ogzkesk.testproject.second.SecondActivity
+import android.net.Uri
 
 
 private const val FRAME =
@@ -142,75 +143,20 @@ class MainActivity : ComponentActivity() {
             safeBrowsingEnabled = true
         }
 
-        mWebView.webViewClient = object : WebViewClient() {
-
-            private fun containsAnyOfHost(url: String): Boolean {
-                return if (!url.contains("streamingcommunity")) {
-                    println("containsAnyOfThem -- Does NOT CONTAINS streamingCommunity :: $url")
-                    if (!url.contains("vixcloud.co")) {
-                        println("containsAnyOfThem -- Does NOT CONTAINS vixCloud :: $url")
-                        false
-                    } else {
-                        true
-                    }
-                } else {
-                    true
-                }
-            }
-
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                super.onPageStarted(view, url, favicon)
-                if (containsAnyOfHost(url.toString()).not()) {
-                    view?.goBack()
-                }
-            }
-
-            override fun onPageFinished(view: WebView?, url: String?) {
-                if (url != null) {
-
-
-                    if (url.contains("/watch")) {
-//                        Handler(Looper.getMainLooper()).postDelayed(Runnable {
-//                            view?.evaluateJavascript(
-//                                """
-//                                var secondIframe = document.querySelector("#app > div > iframe").contentDocument.querySelector("iframe");
-//                                secondIframe.getAttribute("src");
-//                            """.trimIndent()
-//                            ) { jsResultUrl ->
-//                                if (jsResultUrl == "null") return@evaluateJavascript
-//                                println("resultUrl :: $jsResultUrl")
-//                                val newUrl = jsResultUrl.replace("\"", "")
-//                                view.loadUrl(newUrl)
-//                            }
-//                        }, 1000)
-                    }
-
-                    if (url.contains("vixcloud.co/embed")) {
-//                        Handler(Looper.getMainLooper()).postDelayed(Runnable {
-//                            mWebView.evaluateJavascript("""
-//                            window.jwplayer.defaults.autostart = true
-//                            window.jwplayer.vid.autoplay = true
-//                        """.trimIndent(),){
-//                                println("playe basıldı mı ?:: $it")
-//                                    mWebView.reload()
-//                            }
-//                        },2000)
-                    }
-                }
-                super.onPageFinished(view, url)
-            }
-        }
-
-        // https://vixcloud.co/embed/171886?token=59bcebe04f68749097fb63fcf210d599&title=The+Buccaneers&referer=1&expires=1707648729&description=S1%3AE1+Veleno+americano&nextEpisode=1/
-        // https://streamingcommunity.broker/
-        mWebView.loadUrl("https://streamingcommunity.broker/")
-
         onBackPressedDispatcher.addCallback(onBackPressedCallback())
+
+        // ATTENTION: This was auto-generated to handle app links.
+        val appLinkIntent: Intent = intent
+        val appLinkAction: String? = appLinkIntent.action
+        val appLinkData: Uri? = appLinkIntent.data
+        println("DATA ::::::: $appLinkData")
+        println("DATA action::::::: $appLinkAction")
     }
 
 
     override fun onDestroy() {
         sensorManager?.unregisterListener(sensorListener())
+        mWebView.destroy()
         super.onDestroy()
     }
 
