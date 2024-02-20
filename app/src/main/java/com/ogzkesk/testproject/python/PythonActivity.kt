@@ -54,7 +54,6 @@ class PythonActivity : AppCompatActivity() {
 
         // Python Class
 
-
         val ops = mainPyFile["ops"]
 
         binding.tv7.text = ops.toString()
